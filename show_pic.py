@@ -98,5 +98,5 @@ class draw:
       # plt.imshow(y[i].numpy().reshape(28, 28) / 255 - 0.5, 'gray')
       # plt.axis('off')
       # plt.tight_layout()
-      plt.imsave(self.generated_pic_path+'/{}_{}.png'.format(epoch, i), y[i].numpy())
+      plt.imsave(self.generated_pic_path+'/{}_{}_{}.png'.format(self.train_time, epoch, i), y[i].numpy())
     return

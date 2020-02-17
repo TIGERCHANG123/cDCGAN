@@ -13,7 +13,7 @@ windows_root='D:/Automatic/SRTP/GAN'
 root = ubuntu_root
 temp_root = root+'/temp'
 
-def main():
+def main(continue_train, train_time):
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # or any {'0', '1', '2'}
     noise_dim = 100
 
@@ -22,7 +22,7 @@ def main():
     model_dataset = model_name + '-' + dataset.name
 
     train_dataset = dataset.get_train_dataset()
-    pic = draw(10, temp_root, model_dataset, 1)
+    pic = draw(10, temp_root, model_dataset, train_time=train_time)
     generator_optimizer = tf.keras.optimizers.Adam(1e-4)
     discriminator_optimizer = tf.keras.optimizers.Adam(1e-4)
 
@@ -30,7 +30,7 @@ def main():
     ckpt = tf.train.Checkpoint(genetator_optimizers=generator_optimizer, discriminator_optimizer=discriminator_optimizer ,
                                generator=generator_model, discriminator=discriminator_model)
     ckpt_manager = tf.train.CheckpointManager(ckpt, checkpoint_path, max_to_keep=5)
-    if ckpt_manager.latest_checkpoint:
+    if ckpt_manager.latest_checkpoint and continue_train:
         ckpt.restore(ckpt_manager.latest_checkpoint)
         print('Latest checkpoint restored!!')
 
@@ -40,7 +40,7 @@ def main():
     train = train_one_epoch(model=[generator_model, discriminator_model], train_dataset=train_dataset,
               optimizers=[generator_optimizer, discriminator_optimizer], metrics=[gen_loss, disc_loss], noise_dim=noise_dim)
 
-    for epoch in range(50):
+    for epoch in range(100):
         train.train(epoch=epoch, pic=pic)
         pic.show()
         if (epoch + 1) % 5 == 0:
@@ -54,4 +54,4 @@ if __name__ == '__main__':
     config.gpu_options.allow_growth = True
     session = InteractiveSession(config=config)
 
-    main()
+    main(continue_train=False, train_time=1)
