@@ -9,6 +9,7 @@ class mnist_dataset():
         print(meta)
         self.train_dataset=mnist['train']
         self.noise_dim = noise_dim
+        self.name = 'mnist'
         return
     def parse(self, x, y):
         x=tf.cast(x, tf.float64)

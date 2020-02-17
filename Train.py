@@ -21,7 +21,7 @@ class train_one_epoch():
         self.train_dataset = train_dataset
         self.noise_dim = noise_dim
     @tf.function(input_signature=[
-        tf.TensorSpec(shape=(None,128), dtype=tf.float64),
+        tf.TensorSpec(shape=(None,100), dtype=tf.float64),
         tf.TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float64),
     ])
     def train_step(self, noise, images):
