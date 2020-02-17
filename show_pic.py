@@ -93,7 +93,6 @@ class draw:
     x = tf.convert_to_tensor(np.random.rand(pic_num, noise_dim))
     y = generator(x)
     y=tf.squeeze(y)
-    print(y.numpy())
     for i in range(pic_num):
       plt.imsave('{}/{}_{}_{}.png'.format(self.generated_pic_path, self.train_time, epoch, i), y[i].numpy())
     return
