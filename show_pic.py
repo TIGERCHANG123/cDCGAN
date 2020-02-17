@@ -69,7 +69,7 @@ class draw:
     ax1.set(xlabel='batches',ylabel='loss', title = 'gen_loss')
     ax2.set(xlabel='batches',ylabel='loss', title = 'disc_loss')
 
-    plt.savefig(file_path+str(self.i) + '.png')
+    plt.savefig(file_path+'/{}.png'.format(str(self.i)))
     # thread1 = Thread(target=self.close, args=(1,))
     # thread1.start()
     # plt.show()

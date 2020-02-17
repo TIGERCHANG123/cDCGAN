@@ -14,17 +14,19 @@ def generator_loss(fake_output):
     return cross_entropy(tf.ones_like(fake_output), fake_output)
 
 class train_one_epoch():
-    def __init__(self, model, train_dataset, optimizers, metrics):
+    def __init__(self, model, train_dataset, optimizers, metrics, noise_dim):
         self.generator, self.discriminator = model
         self.generator_optimizer, self.discriminator_optimizer = optimizers
         self.gen_loss, self.disc_loss = metrics
         self.train_dataset = train_dataset
+        self.noise_dim = noise_dim
     @tf.function(input_signature=[
-        tf.TensorSpec(shape=(None,100), dtype=tf.float32),
-        tf.TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float32),
+        tf.TensorSpec(shape=(None,128), dtype=tf.float64),
+        tf.TensorSpec(shape=(None, 28, 28, 1), dtype=tf.float64),
     ])
     def train_step(self, noise, images):
         with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+
             generated_images = self.generator(noise, training=True)
             real_output = self.discriminator(images, training=True)
             fake_output = self.discriminator(generated_images, training=True)
@@ -42,8 +44,11 @@ class train_one_epoch():
         self.gen_loss.reset_states()
         self.disc_loss.reset_states()
 
-        for (batch, (images, noise)) in enumerate(self.train_dataset):
-            self.train_step(images, noise)
+        for (batch, (noise, images)) in enumerate(self.train_dataset):
+            noise = tf.random.normal([images.shape[0], self.noise_dim])
+            noise = tf.cast(noise, tf.float64)
+            noise = tf.reshape(noise, [-1, noise.shape[-1]])
+            self.train_step(noise, images)
             pic.add([self.gen_loss.result().numpy(), self.disc_loss.result().numpy()])
             pic.save()
             if batch % 500 == 0:
