@@ -8,10 +8,10 @@ class generator(tf.keras.Model):
     self.img_shape = img_shape
 
     self.model = tf.keras.Sequential()
-    self.model.add(layers.Dense(7 * 7 * 256, use_bias=False, input_shape=noise_shape))
+    self.model.add(layers.Dense(16 * 16 * 256, use_bias=False, input_shape=noise_shape))
     self.model.add(layers.BatchNormalization())
     self.model.add(layers.ReLU())
-    self.model.add(layers.Reshape((7, 7, 256)))
+    self.model.add(layers.Reshape((16, 16, 256)))
 
     self.model.add(layers.Conv2DTranspose(128, (5, 5), strides=2, padding='same', use_bias=False))
     self.model.add(layers.BatchNormalization())
@@ -21,17 +21,25 @@ class generator(tf.keras.Model):
     self.model.add(layers.BatchNormalization())
     self.model.add(layers.ReLU())
 
-    self.model.add(layers.Conv2DTranspose(1, (5, 5), strides=1, padding='same', use_bias=False))
+    self.model.add(layers.Conv2DTranspose(32, (5, 5), strides=2, padding='same', use_bias=False))
+    self.model.add(layers.BatchNormalization())
+    self.model.add(layers.ReLU())
+
+    self.model.add(layers.Conv2DTranspose(3, (5, 5), strides=2, padding='same', use_bias=False))
     self.model.add(layers.Activation(activation='tanh'))
   def call(self, x):
     return self.model(x)
 
 class discriminator(tf.keras.Model):
-  def __init__(self, img_shape=[28, 28, 1]):
+  def __init__(self, img_shape=[128, 128, 3]):
     super(discriminator, self).__init__()
     self.img_shape=img_shape
 
     self.model = tf.keras.Sequential()
+
+    self.model.add(tf.keras.layers.Conv2D(32, kernel_size=5, strides=2, input_shape=self.img_shape, padding="same"))
+    self.model.add(tf.keras.layers.LeakyReLU(alpha=0.2))
+    self.model.add(tf.keras.layers.Dropout(0.25))
 
     self.model.add(tf.keras.layers.Conv2D(64, kernel_size=5, strides=2, input_shape=self.img_shape, padding="same"))
     self.model.add(tf.keras.layers.LeakyReLU(alpha=0.2))

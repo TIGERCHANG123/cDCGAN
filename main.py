@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 import os
 import tensorflow as tf
-from Gans.cDCGAN import get_gan
+from Gans.DCGAN import get_gan
 from show_pic import draw
 from Train import train_one_epoch
-from mnist import mnist_dataset, noise_generator
+from cartoon_face import face_dataset, noise_generator
 # from tensorflow.compat.v1 import ConfigProto
 # from tensorflow.compat.v1 import InteractiveSession
 
@@ -19,7 +19,7 @@ def main(continue_train, train_time):
     batch_size = 128
 
     generator_model, discriminator_model, model_name = get_gan(noise_shape=[noise_dim, ], img_shape=[28, 28, 1])
-    dataset = mnist_dataset(root, batch_size)
+    dataset = face_dataset(root, batch_size)
     noise_gen = noise_generator(noise_dim, 10, batch_size)
     model_dataset = model_name + '-' + dataset.name
 
