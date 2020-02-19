@@ -5,12 +5,12 @@ from cDCGAN import get_gan
 from show_pic import draw
 from Train import train_one_epoch
 from mnist import mnist_dataset, noise_generator
-# from tensorflow.compat.v1 import ConfigProto
-# from tensorflow.compat.v1 import InteractiveSession
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
 
 ubuntu_root='/home/tigerc'
 windows_root='D:/Automatic/SRTP/GAN'
-root = windows_root
+root = ubuntu_root
 temp_root = root+'/temp'
 
 def main(continue_train, train_time):
@@ -18,7 +18,7 @@ def main(continue_train, train_time):
     noise_dim = 100
     batch_size = 128
 
-    generator_model, discriminator_model, model_name = get_gan(noise_shape=[noise_dim, ], img_shape=[28, 28, 1])
+    generator_model, discriminator_model, model_name = get_gan(noise_shape=[noise_dim+10, ], img_shape=[28, 28, 1+10])
     dataset = mnist_dataset(root, batch_size)
     noise_gen = noise_generator(noise_dim, 10, batch_size)
     model_dataset = model_name + '-' + dataset.name
@@ -42,18 +42,18 @@ def main(continue_train, train_time):
     train = train_one_epoch(model=[generator_model, discriminator_model], train_dataset=train_dataset,
               optimizers=[generator_optimizer, discriminator_optimizer], metrics=[gen_loss, disc_loss], noise_gen=noise_gen)
 
-    for epoch in range(100):
+    for epoch in range(50):
         train.train(epoch=epoch, pic=pic)
         pic.show()
         if (epoch + 1) % 5 == 0:
             ckpt_manager.save()
-        pic.save_created_pic(generator_model, 8, noise_gen, epoch)
-    pic.show_created_pic(generator_model, 8, noise_gen)
+        pic.save_created_pic(generator_model, 10, noise_gen, epoch)
+    pic.show_created_pic(generator_model, 10, noise_gen)
     return
 
 if __name__ == '__main__':
-    # config = ConfigProto()
-    # config.gpu_options.allow_growth = True
-    # session = InteractiveSession(config=config)
+    config = ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = InteractiveSession(config=config)
 
-    main(continue_train=True, train_time=2)
+    main(continue_train=True, train_time=1)

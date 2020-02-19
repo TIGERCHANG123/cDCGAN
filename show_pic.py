@@ -79,22 +79,23 @@ class draw:
     plt.show()
 
   def show_created_pic(self, generator, pic_num, noise_gen):
-    noise, auxi_dict = noise_gen.get_noise()
-    x = tf.concat([noise, auxi_dict], axis=-1)
-    y = generator(x)
     for i in range(pic_num):
+      noise, auxi_dict = noise_gen.get_fixed_noise(i)
+      x = tf.concat([noise, auxi_dict], axis=-1)
+      y = generator(x)
+      y = tf.squeeze(y)
       plt.subplot(1, pic_num, i + 1)
-      plt.imshow(y[i].numpy().reshape(28, 28) / 255 - 0.5, 'gray')
+      plt.imshow(y.numpy().reshape(28, 28) / 255 - 0.5, 'gray')
       plt.axis('off')
       plt.tight_layout()
     plt.show()
     return
 
   def save_created_pic(self, generator, pic_num, noise_gen, epoch):
-    noise, auxi_dict = noise_gen.get_noise()
-    x = tf.concat([noise, auxi_dict], axis=-1)
-    y = generator(x)
-    y=tf.squeeze(y)
     for i in range(pic_num):
-      plt.imsave('{}/{}_{}_{}.png'.format(self.generated_pic_path, self.train_time, epoch, i), y[i].numpy())
+      noise, auxi_dict = noise_gen.get_fixed_noise(i)
+      x = tf.concat([noise, auxi_dict], axis=-1)
+      y = generator(x)
+      y = tf.squeeze(y)
+      plt.imsave('{}/{}_{}_{}.png'.format(self.generated_pic_path, self.train_time, epoch, i), y.numpy())
     return

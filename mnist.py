@@ -22,13 +22,13 @@ class mnist_dataset():
 
 class noise_generator():
     def __init__(self, noise_dim, digit_dim, batch_size):
-        self.noise_dim = noise_dim
         self.digit_dim = digit_dim
         self.batch_size = batch_size
-    def get_noise(self):
-        noise = tf.random.normal([self.batch_size, self.noise_dim])
+        self.noise_dim = noise_dim
+    def get_noise(self, batch_size):
+        noise = tf.random.normal([batch_size, self.noise_dim])
         noise = tf.cast(noise, tf.float32)
-        auxi_dict = np.random.multinomial(1, self.digit_dim * [float(1.0 / self.digit_dim)],size=[self.batch_size])
+        auxi_dict = np.random.multinomial(1, self.digit_dim * [float(1.0 / self.digit_dim)],size=[batch_size])
         auxi_dict = tf.convert_to_tensor(auxi_dict)
         auxi_dict = tf.cast(auxi_dict, tf.float32)
         return noise, auxi_dict

@@ -55,9 +55,7 @@ class discriminator(tf.keras.Model):
     return self.model(x)
 
 def get_gan(noise_shape, img_shape):
-    noise_shape[0] += 10
     Generator = generator(noise_shape, img_shape)
-    img_shape[2] += 10
     Discriminator = discriminator(img_shape)
     gen_name = 'c_dc_gan'
     return Generator, Discriminator, gen_name
