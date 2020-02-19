@@ -78,8 +78,9 @@ class draw:
     plt.imshow(image)
     plt.show()
 
-  def show_created_pic(self, generator, pic_num, noise_dim):
-    x = tf.convert_to_tensor(np.random.rand(pic_num, noise_dim))
+  def show_created_pic(self, generator, pic_num, noise_gen):
+    noise, auxi_dict = noise_gen.get_noise()
+    x = tf.concat([noise, auxi_dict], axis=-1)
     y = generator(x)
     for i in range(pic_num):
       plt.subplot(1, pic_num, i + 1)
@@ -89,8 +90,9 @@ class draw:
     plt.show()
     return
 
-  def save_created_pic(self, generator, pic_num, noise_dim, epoch):
-    x = tf.convert_to_tensor(np.random.rand(pic_num, noise_dim))
+  def save_created_pic(self, generator, pic_num, noise_gen, epoch):
+    noise, auxi_dict = noise_gen.get_noise()
+    x = tf.concat([noise, auxi_dict], axis=-1)
     y = generator(x)
     y=tf.squeeze(y)
     for i in range(pic_num):
