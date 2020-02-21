@@ -84,8 +84,9 @@ class draw:
       x = tf.concat([noise, auxi_dict], axis=-1)
       y = generator(x)
       y = tf.squeeze(y)
+      y = (y + 1) / 2
       plt.subplot(1, pic_num, i + 1)
-      plt.imshow(y.numpy().reshape(28, 28) / 255 - 0.5, 'gray')
+      plt.imshow(y.numpy())
       plt.axis('off')
       plt.tight_layout()
     plt.show()
@@ -97,5 +98,6 @@ class draw:
       x = tf.concat([noise, auxi_dict], axis=-1)
       y = generator(x)
       y = tf.squeeze(y)
+      y = (y + 1) / 2
       plt.imsave('{}/{}_{}_{}.png'.format(self.generated_pic_path, self.train_time, epoch, i), y.numpy())
     return
